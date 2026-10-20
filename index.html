@@ -1,0 +1,1043 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <title>Awab Ahmed Osman Mohamed - Portfolio</title>
+    <meta name="description" content="Awab Ahmed Osman Mohamed is an entry-level cybersecurity professional in Atbara, Sudan, with a BSc (Hons) in Information Technology and 2+ years of IT support experience." />
+    <style>
+      :root{
+        --bg:#05060a;
+        --panel: rgba(10,14,28,.72);
+        --panel2: rgba(10,14,28,.55);
+        --stroke: rgba(56,189,248,.22);
+        --stroke2: rgba(59,130,246,.22);
+        --text:#e5e7eb;
+        --muted:#94a3b8;
+        --blue:#3b82f6;
+        --cyan:#22d3ee;
+        --cyan2:#60a5fa;
+      }
+      *{box-sizing:border-box}
+      html,body{height:100%}
+      body{
+        margin:0;
+        font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+        background: var(--bg);
+        color: var(--text);
+        overflow-x:hidden;
+      }
+      a{color:inherit; text-decoration:none}
+      button{font:inherit}
+
+      /* Layout */
+      .wrap{position:relative; min-height:100vh;}
+      .bgFixed{position:fixed; inset:0; pointer-events:none; overflow:hidden; z-index:0}
+      canvas#bgCanvas{
+        position:absolute; inset:0;
+        width:100%; height:100%;
+      }
+      /* keep a tiny hint of hex grid for depth (canvas does the rest) */
+      .grid{
+        position:absolute; inset:-20%;
+        opacity:.08;
+        background-image:url("data:image/svg+xml,%3Csvg width='50' height='43.4' viewBox='0 0 50 43.4' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M25 0l12.5 7.2v14.5L25 28.9 12.5 21.7V7.2L25 0z' fill='none' stroke='%231e40af' stroke-width='0.5'/%3E%3C/svg%3E");
+        background-size:50px 43.4px;
+      }
+
+      /* Progress bar */
+      .progress{
+        position:fixed; top:0; left:0; height:3px; width:100%;
+        background: linear-gradient(90deg,var(--blue),var(--cyan),var(--blue));
+        transform-origin:left;
+        z-index:60;
+        opacity:.9;
+      }
+      .progressInner{height:100%; transform:scaleX(0)}
+
+      /* Sidebar + mobile */
+      .sidebar{
+        position:fixed; left:28px; top:50%; transform:translateY(-50%);
+        display:none; gap:18px; flex-direction:column; z-index:50;
+      }
+      @media (min-width: 1024px){.sidebar{display:flex}}
+.navBtn{
+        display:grid; place-items:center;
+        width:46px; height:46px;
+        background: rgba(4,7,18,.0);
+        border:0;
+        border-radius:14px;
+        cursor:pointer;
+        color:#64748b;
+        transition: transform .15s ease, color .15s ease;
+      }
+      .navBtn svg{color:#64748b}
+      .navBtn:hover svg{color:#22d3ee}
+      .navBtn:hover{transform:scale(1.12)}
+      .navBtn .tip{
+        position:absolute;
+        left:64px; white-space:nowrap;
+        padding:8px 10px;
+        border-radius:10px;
+        background: rgba(2,6,23,.78);
+        border:1px solid rgba(59,130,246,.25);
+        color:#cbd5e1;
+        font-size:14px;
+        opacity:0; transform: translateY(0);
+        transition: opacity .2s ease;
+      }
+      .navBtn:hover .tip{opacity:1}
+      .mobileMenuBtn{
+        position:fixed; top:18px; right:18px; z-index:55;
+        background: rgba(2,6,23,.65);
+        border:1px solid rgba(59,130,246,.25);
+        color:#22d3ee;
+        border-radius:14px;
+        padding:12px;
+        display:grid; place-items:center;
+      }
+      @media (min-width: 1024px){.mobileMenuBtn{display:none}}
+
+      .mobileOverlay{
+        position:fixed; inset:0; background: rgba(0,0,0,.92);
+        backdrop-filter: blur(12px);
+        z-index:70;
+        padding:36px;
+        display:none;
+      }
+      .mobileOverlay.open{display:block}
+      .mobileList{margin-top:90px; display:flex; flex-direction:column; gap:22px}
+      .mobileItem{display:flex; align-items:center; gap:14px; font-size:28px; color:#cbd5e1}
+
+      /* Content */
+      .content{position:relative; z-index:10; padding-left:0}
+      @media (min-width: 1024px){.content{padding-left:96px}}
+      section{padding:84px 20px; min-height:100vh; display:flex; align-items:center; justify-content:center}
+      .container{width:min(1100px, 100%)}
+
+      .heroGrid{display:grid; gap:30px; justify-items:center; text-align:center}
+      .avatar{
+        width:140px; height:140px; border-radius:999px;
+        display:grid; place-items:center;
+        font-size:48px; font-weight:800;
+        background: linear-gradient(135deg, #2563eb, #22d3ee);
+        border:4px solid rgba(59,130,246,.35);
+      }
+      h1{margin:0; font-size: clamp(42px, 6vw, 80px); line-height:1.05}
+      .gradText{background: linear-gradient(90deg, #60a5fa, #22d3ee, #3b82f6); -webkit-background-clip:text; background-clip:text; color:transparent}
+      .badges{display:flex; flex-wrap:wrap; justify-content:center; gap:10px}
+      .badge{
+        padding:10px 16px; border-radius:999px;
+        border:1px solid rgba(59,130,246,.35);
+        background: rgba(37,99,235,.15);
+        color:#a5f3fc; font-weight:600; font-size:15px;
+      }
+      .badge.alt{border-color: rgba(34,211,238,.35); background: rgba(34,211,238,.12); color:#bfdbfe}
+      .desc{max-width:720px; color:var(--muted); font-size:18px; line-height:1.6}
+      .ctaRow{display:flex; flex-wrap:wrap; gap:12px; justify-content:center}
+      .btn{
+        cursor:pointer;
+        padding:14px 26px;
+        border-radius:12px;
+        border:1px solid rgba(59,130,246,.35);
+        background: rgba(15,23,42,.35);
+        color:#cbd5e1;
+        display:inline-flex; gap:10px; align-items:center; justify-content:center;
+        transition: transform .15s ease, background .15s ease, border-color .15s ease;
+        font-weight:700;
+      }
+      .btn:hover{transform: translateY(-2px); border-color: rgba(59,130,246,.6)}
+      .btn.primary{border:0; background: linear-gradient(90deg, #2563eb, #06b6d4); color:#06121f}
+      .socialRow{display:flex; flex-wrap:wrap; gap:12px; justify-content:center; margin-top:6px}
+      .social{
+        width:54px; height:54px; border-radius:14px;
+        border:1px solid rgba(148,163,184,.18);
+        background: rgba(15,23,42,.35);
+        display:grid; place-items:center;
+        transition: transform .15s ease, border-color .15s ease;
+      }
+      .social:hover{transform:scale(1.12); border-color: rgba(59,130,246,.55)}
+
+      .sectionTitle{
+        text-align:center; font-size: clamp(34px, 4.5vw, 52px);
+        margin:0 0 48px;
+        font-weight:900;
+      }
+
+      .card{
+        background: var(--panel);
+        border:1px solid rgba(59,130,246,.25);
+        border-radius:22px;
+        padding:26px;
+        backdrop-filter: blur(10px);
+        box-shadow: 0 0 0 rgba(0,0,0,0);
+        transition: transform .15s ease, border-color .15s ease;
+      }
+      .card:hover{transform: translateY(-6px); border-color: rgba(34,211,238,.55)}
+      .grid3{display:grid; grid-template-columns: repeat(1,1fr); gap:18px}
+      @media(min-width: 900px){.grid3{grid-template-columns: repeat(3,1fr)}}
+
+      .grid2{display:grid; grid-template-columns: repeat(1,1fr); gap:18px}
+      @media(min-width: 900px){.grid2{grid-template-columns: repeat(2,1fr)}}
+
+      .chipList{display:flex; flex-direction:column; gap:10px; margin-top:16px}
+      .chip{
+        display:flex; align-items:center; gap:12px;
+        padding:12px 14px; border-radius:14px;
+        background: rgba(2,6,23,.35);
+        border:1px solid rgba(59,130,246,.16);
+        color:#e2e8f0;
+      }
+      .dot{width:8px; height:8px; border-radius:999px; background: #22d3ee; box-shadow: 0 0 18px rgba(34,211,238,.55)}
+
+      /* Timeline */
+      .timeline{position:relative}
+      .timeline:before{
+        content:"";
+        position:absolute; left:18px; top:0; bottom:0;
+        width:2px;
+        background: linear-gradient(180deg, rgba(59,130,246,.6), rgba(34,211,238,.7), rgba(59,130,246,.6));
+        opacity:.9;
+      }
+      @media(min-width: 900px){.timeline:before{left:50%}}
+      .expItem{position:relative; padding-left:44px; margin-bottom:44px}
+      @media(min-width: 900px){.expItem{padding-left:0; padding-right:0}}
+      .expDot{
+        position:absolute; left:10px; top:18px;
+        width:18px; height:18px; border-radius:999px;
+        background: linear-gradient(135deg,#3b82f6,#22d3ee);
+        border:4px solid #05060a;
+        box-shadow: 0 0 0 1px rgba(59,130,246,.25);
+      }
+      @media(min-width: 900px){.expDot{left: calc(50% - 9px)}}
+      .expCard{padding:24px; border-radius:22px; border:1px solid rgba(59,130,246,.25); background: var(--panel2)}
+      @media(min-width: 900px){
+        .expItem.left{padding-right:50%;}
+        .expItem.right{padding-left:50%;}
+        .expItem.right .expCard{margin-left:18px}
+        .expItem.left .expCard{margin-right:18px}
+      }
+      .expTitle{margin:0; font-size:26px; color:#93c5fd}
+      .expPeriod{margin:6px 0 0; color:#67e8f9; font-weight:700}
+      .list{margin:18px 0 0; padding-left:0; list-style:none; display:flex; flex-direction:column; gap:10px}
+      .list li{display:flex; gap:12px; color:#e2e8f0}
+      .list li .miniDot{width:9px; height:9px; border-radius:999px; background:#22d3ee; margin-top:6px}
+
+      /* Contact grid */
+      .contactGrid{display:grid; grid-template-columns: repeat(1,1fr); gap:18px}
+      @media(min-width: 900px){.contactGrid{grid-template-columns: repeat(2,1fr)}}
+      .small{font-size:14px; color:var(--muted)}
+      .locPanel{margin-top:22px; text-align:center}
+
+      /* Floating animation */
+.floaty{animation: floaty 6s ease-in-out infinite}
+      @keyframes floaty{0%,100%{transform: translateY(0)} 50%{transform: translateY(-26px) rotate(-2deg)}}
+
+      /* Accessibility */
+      .srOnly{position:absolute; left:-9999px; width:1px; height:1px; overflow:hidden}
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+        <div class="bgFixed" aria-hidden="true">
+        <canvas id="bgCanvas"></canvas>
+        <div class="grid"></div>
+      </div>
+
+      <div class="progress" aria-hidden="true"><div class="progressInner" id="progressInner"></div></div>
+
+      <!-- Desktop sidebar -->
+      <nav class="sidebar" aria-label="Section navigation">
+        <button class="navBtn" data-scroll="home" aria-label="Home">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9.5L12 3l9 6.5V21a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1V9.5z"/></svg>
+          <span class="tip">Home</span>
+        </button>
+        <button class="navBtn" data-scroll="about" aria-label="About">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          <span class="tip">About</span>
+        </button>
+        <button class="navBtn" data-scroll="skills" aria-label="Skills">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 0 0-1.4 0L7 12.6l-2 6 6-2 6.3-6.3a1 1 0 0 0 0-1.4l-2.6-2.6z"/><path d="M13 5l6 6"/></svg>
+          <span class="tip">Skills</span>
+        </button>
+        <button class="navBtn" data-scroll="projects" aria-label="Projects">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M8 9h8"/><path d="M8 13h6"/></svg>
+          <span class="tip">Projects</span>
+        </button>
+        <button class="navBtn" data-scroll="experience" aria-label="Experience">
+
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 3H8a2 2 0 0 0-2 2v2h12V5a2 2 0 0 0-2-2z"/></svg>
+          <span class="tip">Experience</span>
+        </button>
+        <button class="navBtn" data-scroll="education" aria-label="Education">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7l9-4 9 4-9 4-9-4z"/><path d="M21 10v6"/><path d="M3 7v6"/><path d="M12 11v10"/></svg>
+          <span class="tip">Education</span>
+        </button>
+        <button class="navBtn" data-scroll="contact" aria-label="Contact">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a4 4 0 0 1-4 4H8l-5 3V7a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4z"/></svg>
+          <span class="tip">Contact</span>
+        </button>
+      </nav>
+
+      <!-- Mobile -->
+      <button class="mobileMenuBtn" id="mobileMenuBtn" aria-label="Open menu">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16"/><path d="M4 12h16"/><path d="M4 18h16"/></svg>
+      </button>
+      <div class="mobileOverlay" id="mobileOverlay" role="dialog" aria-modal="true">
+        <div class="mobileList">
+          <a class="mobileItem" href="#home" data-scroll="home">Home</a>
+          <a class="mobileItem" href="#about" data-scroll="about">About</a>
+          <a class="mobileItem" href="#skills" data-scroll="skills">Skills</a>
+          <a class="mobileItem" href="#projects" data-scroll="projects">Projects</a>
+          <a class="mobileItem" href="#experience" data-scroll="experience">Experience</a>
+
+          <a class="mobileItem" href="#education" data-scroll="education">Education</a>
+          <a class="mobileItem" href="#contact" data-scroll="contact">Contact</a>
+        </div>
+      </div>
+
+      <div class="content">
+        <!-- HERO -->
+        <section id="home">
+          <div class="container heroGrid">
+            <div class="avatar floaty">AA</div>
+            <h1><span class="gradText">Awab Ahmed<br />Osman Mohamed</span></h1>
+
+
+            <div class="badges" aria-label="Roles">
+              <div class="badge">Junior Security Analyst</div>
+              <div class="badge alt">SOC Analyst</div>
+              <div class="badge">IT Support</div>
+            </div>
+
+            <p class="desc">Entry-level cybersecurity professional with a BSc (Hons) in Information Technology and the Google Cybersecurity Professional Certificate (2026). Skilled in vulnerability assessment, SIEM-based threat detection, and Python automation. Built a network vulnerability scanner and have 2+ years of IT support experience. Seeking a Junior Security Analyst, SOC Analyst, or IT Support role.</p>
+
+
+            <div class="ctaRow">
+<a class="btn primary" href="#contact">
+                <span style="display:inline-flex">✉</span>
+                Get In Touch
+                <span aria-hidden="true">→</span>
+              </a>
+              <a class="btn" href="./pdfs/Awab's CV.pdf" download="Awab's CV.pdf">
+                <span style="display:inline-flex">⭳</span>
+                Download CV
+              </a>
+            </div>
+
+            <div class="socialRow" aria-label="Social links">
+              <a class="social" href="https://github.com/Awab-Ahmed-Os" target="_blank" rel="noopener noreferrer" aria-label="GitHub">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-4 1-4-2-6-2"/><path d="M15 19v-3a4 4 0 0 0-1-3c3-1 6-5 3-10-1 0-2 1-3 1-1-1-2-1-3-1s-2 0-3 1c-1 0-2-1-3-1-3 5 0 9 3 10a4 4 0 0 0-1 3v3"/></svg>
+              </a>
+              <a class="social" href="https://www.linkedin.com/in/awab-ahmed-720b743a7/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4V9h4v2a4 4 0 0 1 2-3z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+              </a>
+              <a class="social" href="https://awab-ahmed-os.github.io/Portfolio/" target="_blank" rel="noopener noreferrer" aria-label="Portfolio website">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a15 15 0 0 1 0 18M12 3a15 15 0 0 0 0 18"/></svg>
+              </a>
+            </div>
+          </div>
+        </section>
+
+        <!-- ABOUT -->
+        <section id="about">
+          <div class="container">
+            <h2 class="sectionTitle"><span class="gradText">About Me</span></h2>
+            <div class="grid3">
+              <article class="card">
+                <div style="display:flex; gap:14px; align-items:center">
+                  <div style="width:52px; height:52px; border-radius:14px; display:grid; place-items:center; background: rgba(59,130,246,.18); border:1px solid rgba(59,130,246,.25)">⌁</div>
+                  <h3 style="margin:0; font-size:26px; color:#93c5fd">Cybersecurity</h3>
+                </div>
+                <p style="margin:12px 0 0; color:var(--muted); line-height:1.7">Hands-on focus in vulnerability assessment, SIEM-based threat detection, incident response, and Python automation.</p>
+              </article>
+              <article class="card" style="border-color: rgba(34,211,238,.25)">
+                <div style="display:flex; gap:14px; align-items:center">
+                  <div style="width:52px; height:52px; border-radius:14px; display:grid; place-items:center; background: rgba(34,211,238,.14); border:1px solid rgba(34,211,238,.25)">🛡</div>
+                  <h3 style="margin:0; font-size:26px; color:#67e8f9">IT Support</h3>
+                </div>
+                <p style="margin:12px 0 0; color:var(--muted); line-height:1.7">More than two years supporting customers with device installations, software updates, troubleshooting, and clear user guidance.</p>
+              </article>
+              <article class="card">
+                <div style="display:flex; gap:14px; align-items:center">
+                  <div style="width:52px; height:52px; border-radius:14px; display:grid; place-items:center; background: rgba(59,130,246,.14); border:1px solid rgba(59,130,246,.25)">⟐</div>
+                  <h3 style="margin:0; font-size:26px; color:#60a5fa">Languages</h3>
+                </div>
+                <p style="margin:12px 0 0; color:var(--muted); line-height:1.7">Arabic (native) and English (professional working proficiency).</p>
+              </article>
+            </div>
+          </div>
+        </section>
+
+        <!-- SKILLS -->
+        <section id="skills">
+          <div class="container">
+            <h2 class="sectionTitle"><span class="gradText">Technical Arsenal</span></h2>
+            <div class="grid2">
+              <article class="card">
+                <h3 style="margin:0 0 10px; font-size:28px; color:#93c5fd">Cybersecurity</h3>
+                <div class="chipList">
+                  <div class="chip"><span class="dot"></span><span>Vulnerability Assessment</span></div>
+                  <div class="chip"><span class="dot"></span><span>Threat Detection & Incident Response</span></div>
+                  <div class="chip"><span class="dot"></span><span>Risk Management & Security Auditing</span></div>
+                  <div class="chip"><span class="dot"></span><span>SIEM, IDS & Log Analysis</span></div>
+                  <div class="chip"><span class="dot"></span><span>Packet Analysis, CVE/CVSS & OWASP</span></div>
+                  <div class="chip"><span class="dot"></span><span>NIST CSF, NIST RMF & CIA Triad</span></div>
+                </div>
+              </article>
+
+              <article class="card" style="border-color: rgba(34,211,238,.25)">
+                <h3 style="margin:0 0 10px; font-size:28px; color:#67e8f9">Security Tools</h3>
+                <div class="chipList">
+                  <div class="chip"><span class="dot"></span><span>Nmap</span></div>
+                  <div class="chip"><span class="dot"></span><span>Wireshark & tcpdump</span></div>
+                  <div class="chip"><span class="dot"></span><span>Splunk & Google Chronicle</span></div>
+                </div>
+              </article>
+
+              <article class="card">
+                <h3 style="margin:0 0 10px; font-size:28px; color:#60a5fa">Networking</h3>
+                <div class="chipList">
+                  <div class="chip"><span class="dot"></span><span>TCP/IP</span></div>
+                  <div class="chip"><span class="dot"></span><span>LAN/WAN</span></div>
+                  <div class="chip"><span class="dot"></span><span>VPNs & Firewalls</span></div>
+                  <div class="chip"><span class="dot"></span><span>Network Protocols & Architecture</span></div>
+                  <div class="chip"><span class="dot"></span><span>Cisco Packet Tracer</span></div>
+                  <div class="chip"><span class="dot"></span><span>Network Troubleshooting</span></div>
+                </div>
+              </article>
+
+              <article class="card" style="border-color: rgba(34,211,238,.25)">
+                <h3 style="margin:0 0 10px; font-size:28px; color:#67e8f9">Programming</h3>
+                <div class="chipList">
+                  <div class="chip"><span class="dot"></span><span>Python (automation, regular expressions, file handling)</span></div>
+                  <div class="chip"><span class="dot"></span><span>C, C++, Java, Dart & JavaScript</span></div>
+                  <div class="chip"><span class="dot"></span><span>PHP, HTML & CSS</span></div>
+                </div>
+              </article>
+
+              <article class="card">
+                <h3 style="margin:0 0 10px; font-size:28px; color:#93c5fd">Databases & Platforms</h3>
+                <div class="chipList">
+                  <div class="chip"><span class="dot"></span><span>PostgreSQL</span></div>
+                  <div class="chip"><span class="dot"></span><span>SQL, Schema Design & Query Optimization</span></div>
+                  <div class="chip"><span class="dot"></span><span>Database Backup & Restore</span></div>
+                  <div class="chip"><span class="dot"></span><span>Flask, Flutter & Docker</span></div>
+                  <div class="chip"><span class="dot"></span><span>pgAdmin</span></div>
+                  <div class="chip"><span class="dot"></span><span>Android Studio, VS Code & Postman</span></div>
+                  <div class="chip"><span class="dot"></span><span>Git/GitHub & DBeaver</span></div>
+                </div>
+              </article>
+
+              <article class="card">
+                <h3 style="margin:0 0 10px; font-size:28px; color:#60a5fa">Systems & IT Support</h3>
+                <div class="chipList">
+                  <div class="chip"><span class="dot"></span><span>Linux: File Management, Shell Scripting, Permissions & Process Control</span></div>
+                  <div class="chip"><span class="dot"></span><span>Windows Administration & Troubleshooting</span></div>
+                  <div class="chip"><span class="dot"></span><span>Remote Desktop, Ticketing & Device Installation</span></div>
+                  <div class="chip"><span class="dot"></span><span>Software Updates & User Guidance</span></div>
+                </div>
+              </article>
+
+              <article class="card" style="border-color: rgba(34,211,238,.25)">
+                <h3 style="margin:0 0 10px; font-size:28px; color:#67e8f9">Professional Skills</h3>
+                <div class="chipList">
+                  <div class="chip"><span class="dot"></span><span>Microsoft 365 & Google Workspace</span></div>
+                  <div class="chip"><span class="dot"></span><span>Problem Solving & Attention to Detail</span></div>
+                  <div class="chip"><span class="dot"></span><span>Teamwork, Leadership & Time Management</span></div>
+                  <div class="chip"><span class="dot"></span><span>Communication & Working Under Pressure</span></div>
+                </div>
+              </article>
+            </div>
+          </div>
+        </section>
+
+        <!-- PROJECTS -->
+        <section id="projects">
+          <div class="container">
+            <h2 class="sectionTitle"><span class="gradText">Projects</span></h2>
+
+            <div class="grid2" style="gap:22px; align-items:stretch;">
+              <!-- Project 1 -->
+              <article class="card" style="padding:28px; border-radius:26px;">
+                <div style="display:flex; align-items:flex-start; gap:16px; flex-wrap:wrap">
+                  <div style="width:62px; height:62px; border-radius:18px; display:grid; place-items:center; background: rgba(59,130,246,.18); border:1px solid rgba(59,130,246,.25); font-size:26px">🛡</div>
+                  <div style="flex:1; min-width:260px">
+                    <h3 style="margin:0; font-size:28px; color:#93c5fd">Network Vulnerability Scanner (NVS)</h3>
+                    <div class="small" style="margin-top:8px; font-size:15px; color:#67e8f9; font-weight:800">The Future University, Sudan | Nov 2025</div>
+                  </div>
+                </div>
+
+                <p style="margin:14px 0 0; color:var(--muted); line-height:1.75; font-size:16px">
+                  Full-stack network security tool that automates open-port detection, performs real-time CVE lookups, and provides CVSS-based risk scoring and remediation guidance.
+                </p>
+
+                <ul class="list" style="margin-top:14px; gap:10px">
+                  <li><span class="miniDot"></span>Automated open-port detection using python-nmap and integrated real-time CVE lookups.</li>
+                  <li><span class="miniDot"></span>Applied CVSS-based risk scoring to prioritize vulnerabilities by severity.</li>
+                  <li><span class="miniDot"></span>Provided AI-powered remediation guidance to network administrators through an Android app.</li>
+                  <li><span class="miniDot"></span>Built a Flask API backed by PostgreSQL and SQLAlchemy.</li>
+                </ul>
+
+                <div style="margin-top:18px">
+                  <div class="small" style="margin-bottom:10px; font-weight:900; color:#60a5fa; font-size:15px">Tech Stack</div>
+                  <div class="chipList" style="margin-top:0; flex-direction:row; flex-wrap:wrap">
+                    <div class="badge" style="padding:10px 14px; background: rgba(37,99,235,.16); border-color: rgba(59,130,246,.25);">Flutter</div>
+                    <div class="badge" style="padding:10px 14px; background: rgba(37,99,235,.16); border-color: rgba(59,130,246,.25);">Python</div>
+                    <div class="badge" style="padding:10px 14px; background: rgba(37,99,235,.16); border-color: rgba(59,130,246,.25);">Flask</div>
+                    <div class="badge" style="padding:10px 14px; background: rgba(37,99,235,.16); border-color: rgba(59,130,246,.25);">PostgreSQL</div>
+                    <div class="badge" style="padding:10px 14px; background: rgba(34,211,238,.12); border-color: rgba(34,211,238,.25);">python-nmap</div>
+                    <div class="badge" style="padding:10px 14px; background: rgba(34,211,238,.12); border-color: rgba(34,211,238,.25);">CVSSLib</div>
+                    <div class="badge" style="padding:10px 14px; background: rgba(34,211,238,.12); border-color: rgba(34,211,238,.25);">SQLAlchemy</div>
+                    <div class="badge" style="padding:10px 14px; background: rgba(34,211,238,.12); border-color: rgba(34,211,238,.25);">Android</div>
+                    <div class="badge" style="padding:10px 14px; background: rgba(34,211,238,.12); border-color: rgba(34,211,238,.25);">CVE/CVSS</div>
+                  </div>
+                </div>
+                <a class="btn" style="margin-top:18px" href="https://github.com/Awab-Ahmed-Os/NVS" target="_blank" rel="noopener noreferrer">View GitHub Repository <span aria-hidden="true">→</span></a>
+              </article>
+
+              <!-- Project 2 -->
+              <article class="card" style="padding:28px; border-radius:26px; border-color: rgba(34,211,238,.25);">
+                <div style="display:flex; align-items:flex-start; gap:16px; flex-wrap:wrap">
+                  <div style="width:62px; height:62px; border-radius:18px; display:grid; place-items:center; background: rgba(34,211,238,.14); border:1px solid rgba(34,211,238,.25); font-size:26px">🌐</div>
+                  <div style="flex:1; min-width:260px">
+                    <h3 style="margin:0; font-size:28px; color:#67e8f9">Portfolio Website</h3>
+                    <div class="small" style="margin-top:8px; font-size:15px; color:#93c5fd; font-weight:800">Apr 2026 | HTML · CSS · JavaScript</div>
+                  </div>
+                </div>
+
+                <p style="margin:14px 0 0; color:var(--muted); line-height:1.75; font-size:16px">
+                  Built a fully responsive single-page portfolio website from scratch using vanilla HTML, CSS, and JavaScript.
+                </p>
+
+                <ul class="list" style="margin-top:14px; gap:10px">
+                  <li><span class="miniDot"></span>Implemented animated interface elements and mobile-responsive navigation.</li>
+                  <li><span class="miniDot"></span>Created a dynamic certification gallery with direct certificate verification links.</li>
+                  <li><span class="miniDot"></span>Designed and developed the site without external JavaScript frameworks.</li>
+                </ul>
+
+                <div style="margin-top:18px">
+                  <div class="small" style="margin-bottom:10px; font-weight:900; color:#60a5fa; font-size:15px">Tech Stack</div>
+                  <div class="chipList" style="margin-top:0; flex-direction:row; flex-wrap:wrap">
+                    <div class="badge" style="padding:10px 14px; background: rgba(34,211,238,.12); border-color: rgba(34,211,238,.25);">HTML</div>
+                    <div class="badge" style="padding:10px 14px; background: rgba(34,211,238,.12); border-color: rgba(34,211,238,.25);">CSS</div>
+                    <div class="badge" style="padding:10px 14px; background: rgba(37,99,235,.16); border-color: rgba(59,130,246,.25);">JavaScript</div>
+                    <div class="badge" style="padding:10px 14px; background: rgba(37,99,235,.16); border-color: rgba(59,130,246,.25);">Responsive UI</div>
+                  </div>
+                </div>
+              </article>
+            </div>
+          </div>
+        </section>
+
+        <!-- EXPERIENCE -->
+        <section id="experience">
+
+          <div class="container">
+            <h2 class="sectionTitle"><span class="gradText">Work Experience</span></h2>
+            <div class="timeline">
+              <div class="expItem left">
+                <div class="expDot"></div>
+                <div class="expCard">
+                  <h3 class="expTitle">Media Store Assistant</h3>
+                  <p class="expPeriod">Apr 2025 – Feb 2026</p>
+                  <ul class="list">
+                    <li><span class="miniDot"></span>Supported 50+ customers weekly with data transfers and device compatibility issues, maintaining a 95% issue resolution rate.</li>
+                    <li><span class="miniDot"></span>Organized digital storage systems, reducing transfer errors by 20%.</li>
+                  </ul>
+
+                </div>
+              </div>
+              <div class="expItem right">
+                <div class="expDot"></div>
+                <div class="expCard">
+                  <h3 class="expTitle">Software Operation Engineer</h3>
+                  <p class="expPeriod">Jan 2024 – Mar 2025</p>
+                  <ul class="list">
+                    <li><span class="miniDot"></span>Delivered end-to-end technical support across 100+ device installations and software updates, achieving a 90% first-contact resolution rate.</li>
+                    <li><span class="miniDot"></span>Improved customer satisfaction by 30% through efficient troubleshooting and clear user guidance.</li>
+                  </ul>
+
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- EDUCATION -->
+        <section id="education">
+          <div class="container">
+            <h2 class="sectionTitle"><span class="gradText">Education & Certifications</span></h2>
+
+            <div class="card" style="margin-bottom:18px; border-radius:28px; padding:30px; border-color: rgba(59,130,246,.35); background: linear-gradient(135deg, rgba(37,99,235,.12), rgba(2,6,23,.55))">
+              <div style="display:flex; gap:18px; align-items:flex-start; flex-wrap:wrap">
+                <div style="width:84px; height:84px; border-radius:22px; display:grid; place-items:center; background: rgba(59,130,246,.18); border:1px solid rgba(59,130,246,.25)">🎓</div>
+                <div style="flex:1; min-width:260px">
+                  <h3 style="margin:0; font-size:30px; color:#93c5fd">Bachelor of Science (Hons) in Information Technology</h3>
+                  <p class="small" style="margin:10px 0 14px; font-size:16px; color:#67e8f9">The Future University, Sudan | 2020 – 2025</p>
+                  <div style="display:flex; gap:10px; flex-wrap:wrap">
+                    <div class="badge" style="background: rgba(37,99,235,.18)">Second-Upper Class</div>
+                    <div class="badge alt" style="background: rgba(34,211,238,.16)">CGPA: 3.03 / 4.00</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="card" style="padding:22px; border-radius:18px">
+              <div style="display:flex; align-items:center; gap:14px; margin-bottom:18px">
+                <div style="width:46px; height:46px; border-radius:14px; display:grid; place-items:center; background: rgba(34,211,238,.16); border:1px solid rgba(34,211,238,.25)">🏆</div>
+                <h3 style="margin:0; font-size:24px; color:#67e8f9">Certifications</h3>
+              </div>
+
+              <div id="certList" style="display:flex; flex-direction:column; gap:14px"></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- CONTACT -->
+        <section id="contact">
+          <div class="container">
+            <h2 class="sectionTitle"><span class="gradText">Let's Connect</span></h2>
+            <div class="contactGrid">
+              <a class="card" href="mailto:awabahmed987@gmail.com">
+
+                <div style="display:flex; gap:14px; align-items:center">
+                  <div style="width:60px; height:60px; border-radius:18px; display:grid; place-items:center; background: rgba(59,130,246,.18); border:1px solid rgba(59,130,246,.25)">✉</div>
+                  <div>
+                    <h3 style="margin:0; font-size:22px; color:#93c5fd">Email Me</h3>
+                    <div class="small">Drop me a message</div>
+                  </div>
+                </div>
+                <p style="margin:14px 0 0; color:#e2e8f0; font-weight:700">awabahmed987@gmail.com</p>
+              </a>
+
+              <a class="card" href="tel:+249994376150">
+                <div style="display:flex; gap:14px; align-items:center">
+                  <div style="width:60px; height:60px; border-radius:18px; display:grid; place-items:center; background: rgba(34,211,238,.14); border:1px solid rgba(34,211,238,.25)">☎</div>
+                  <div>
+                    <h3 style="margin:0; font-size:22px; color:#67e8f9">Call Me</h3>
+                    <div class="small">Let's talk</div>
+                  </div>
+                </div>
+                <div style="margin-top:14px; display:flex; flex-direction:column; gap:8px">
+                  <div style="color:#e2e8f0; font-weight:700">+249 994 376 150 <span style="color:#64748b; font-size:13px; font-weight:600">(Calls & WhatsApp)</span></div>
+                </div>
+              </a>
+
+              <a class="card" href="https://github.com/Awab-Ahmed-Os" target="_blank" rel="noopener noreferrer">
+                <div style="display:flex; gap:14px; align-items:center">
+                  <div style="width:60px; height:60px; border-radius:18px; display:grid; place-items:center; background: rgba(59,130,246,.18); border:1px solid rgba(59,130,246,.25)">⌘</div>
+                  <div>
+                    <h3 style="margin:0; font-size:22px; color:#93c5fd">GitHub</h3>
+                    <div class="small">Check my code</div>
+                  </div>
+                </div>
+                <p style="margin:14px 0 0; color:#e2e8f0; font-weight:700">github.com/Awab-Ahmed-Os</p>
+              </a>
+
+              <a class="card" href="https://www.linkedin.com/in/awab-ahmed-720b743a7/" target="_blank" rel="noopener noreferrer">
+                <div style="display:flex; gap:14px; align-items:center">
+                  <div style="width:60px; height:60px; border-radius:18px; display:grid; place-items:center; background: rgba(34,211,238,.14); border:1px solid rgba(34,211,238,.25)">in</div>
+                  <div>
+                    <h3 style="margin:0; font-size:22px; color:#67e8f9">LinkedIn</h3>
+                    <div class="small">Let's network</div>
+                  </div>
+                </div>
+                <p style="margin:14px 0 0; color:#e2e8f0; font-weight:700">linkedin.com/in/awab-ahmed-720b743a7</p>
+              </a>
+            </div>
+
+            <div class="card locPanel" style="padding:22px; margin-top:22px">
+              <div style="display:grid; place-items:center; gap:6px">
+                <div style="font-size:18px; color:#67e8f9; font-weight:800">📍 Based in <span style="color:#60a5fa">Atbara, Sudan</span></div>
+                <div class="small">Open to remote work and relocation</div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <footer style="padding:28px 20px; text-align:center; color:#94a3b8; border-top:1px solid rgba(59,130,246,.2); background: rgba(2,6,23,.25)" class="small">
+          © 2026 Awab Ahmed Osman Mohamed. All rights reserved.
+        </footer>
+      </div>
+
+    </div>
+
+    <script>
+      // Removed duplicate background entry (canvas is initialized earlier).
+      const sections = ['home','about','skills','experience','education','contact'];
+
+      // Reactive background (canvas)
+      (function () {
+        const canvas = document.getElementById('bgCanvas');
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d', { alpha: true });
+
+        let w = 0;
+        let h = 0;
+        let dpr = Math.min(window.devicePixelRatio || 1, 2);
+
+        // Pointer influence
+        const pointer = {
+          x: 0,
+          y: 0,
+          tx: 0,
+          ty: 0,
+          active: false
+        };
+
+        // Mesh points
+        const points = [];
+        const pointCount = 90;
+        const maxLinks = 5;
+
+        // Animation throttling (performance)
+        let last = 0;
+        const fpsCap = 50;
+        const frameDelay = 1000 / fpsCap;
+
+        function rand(min, max) {
+          return Math.random() * (max - min) + min;
+        }
+
+        function resize() {
+          const rect = canvas.getBoundingClientRect();
+          w = Math.max(1, rect.width);
+          h = Math.max(1, rect.height);
+          dpr = Math.min(window.devicePixelRatio || 1, 2);
+          canvas.width = Math.floor(w * dpr);
+          canvas.height = Math.floor(h * dpr);
+          ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+          points.length = 0;
+          for (let i = 0; i < pointCount; i++) {
+            points.push({
+              x: rand(0, w),
+              y: rand(0, h),
+              vx: rand(-0.25, 0.25),
+              vy: rand(-0.25, 0.25),
+              r: rand(1.2, 3.0),
+              seed: Math.random() * 1000
+            });
+          }
+
+          pointer.x = w / 2;
+          pointer.y = h / 2;
+          pointer.tx = pointer.x;
+          pointer.ty = pointer.y;
+        }
+
+        function setPointerFromEvent(e) {
+          const rect = canvas.getBoundingClientRect();
+          pointer.tx = e.clientX - rect.left;
+          pointer.ty = e.clientY - rect.top;
+          pointer.active = true;
+        }
+
+        window.addEventListener('resize', resize);
+        window.addEventListener('pointermove', setPointerFromEvent, { passive: true });
+        window.addEventListener('pointerleave', () => {
+          pointer.active = false;
+          pointer.tx = w / 2;
+          pointer.ty = h / 2;
+        });
+
+        function draw(time) {
+          const now = time;
+          if (now - last < frameDelay) {
+            requestAnimationFrame(draw);
+            return;
+          }
+          last = now;
+
+          // Ease pointer
+          pointer.x += (pointer.tx - pointer.x) * 0.06;
+          pointer.y += (pointer.ty - pointer.y) * 0.06;
+
+          ctx.clearRect(0, 0, w, h);
+
+          // Subtle scan sweep
+          const sweep = (now * 0.00008) % 1;
+          const sweepY = h * sweep;
+          const grad = ctx.createLinearGradient(0, sweepY - 80, 0, sweepY + 80);
+          grad.addColorStop(0, 'rgba(34,211,238,0)');
+          grad.addColorStop(0.5, 'rgba(34,211,238,0.08)');
+          grad.addColorStop(1, 'rgba(59,130,246,0)');
+          ctx.fillStyle = grad;
+          ctx.fillRect(0, sweepY - 120, w, 240);
+
+          // Update points
+          for (let i = 0; i < points.length; i++) {
+            const p = points[i];
+            // drift
+            p.x += p.vx;
+            p.y += p.vy;
+
+            // pointer attraction (reactive)
+            const dx = p.x - pointer.x;
+            const dy = p.y - pointer.y;
+            const dist2 = dx * dx + dy * dy;
+            const influence = pointer.active ? 1 / (1 + dist2 / 40000) : 0.08;
+            p.x -= dx * 0.0009 * influence;
+            p.y -= dy * 0.0009 * influence;
+
+            // soft bounds
+            if (p.x < -30) p.x = w + 30;
+            if (p.x > w + 30) p.x = -30;
+            if (p.y < -30) p.y = h + 30;
+            if (p.y > h + 30) p.y = -30;
+
+            const pulse = 0.6 + 0.4 * Math.sin((now * 0.0012) + p.seed);
+            p.drawR = p.r * (0.85 + 0.35 * pulse * influence);
+          }
+
+          // Links
+          for (let i = 0; i < points.length; i++) {
+            const a = points[i];
+            let links = 0;
+
+            for (let j = i + 1; j < points.length; j++) {
+              const b = points[j];
+              if (links >= maxLinks) break;
+
+              const dx = a.x - b.x;
+              const dy = a.y - b.y;
+              const d2 = dx * dx + dy * dy;
+              const maxD = 160;
+              if (d2 < maxD * maxD) {
+                const d = Math.sqrt(d2);
+                const alpha = 0.22 * (1 - d / maxD);
+
+                // Boost links near pointer
+                const pdx = (a.x + b.x) * 0.5 - pointer.x;
+                const pdy = (a.y + b.y) * 0.5 - pointer.y;
+                const pDist2 = pdx * pdx + pdy * pdy;
+                const pBoost = pointer.active ? (1 / (1 + pDist2 / 60000)) : 0.15;
+
+                const strength = Math.min(1, pBoost * 1.4);
+                ctx.strokeStyle = `rgba(59,130,246,${alpha * (0.65 + strength)})`;
+                ctx.lineWidth = 1;
+                ctx.beginPath();
+                ctx.moveTo(a.x, a.y);
+                ctx.lineTo(b.x, b.y);
+                ctx.stroke();
+                links++;
+              }
+            }
+          }
+
+          // Nodes
+          for (let i = 0; i < points.length; i++) {
+            const p = points[i];
+            const dx = p.x - pointer.x;
+            const dy = p.y - pointer.y;
+            const dist2 = dx * dx + dy * dy;
+            const influence = pointer.active ? 1 / (1 + dist2 / 45000) : 0.05;
+
+            const a1 = Math.min(1, 0.25 + influence * 0.9);
+            ctx.fillStyle = `rgba(34,211,238,${0.18 * a1})`;
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, p.drawR * 2.2, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.fillStyle = `rgba(96,165,250,${0.55 * a1})`;
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, p.drawR, 0, Math.PI * 2);
+            ctx.fill();
+          }
+
+          requestAnimationFrame(draw);
+        }
+
+        resize();
+        requestAnimationFrame(draw);
+      })();
+
+      const sidebarButtons = document.querySelectorAll('.navBtn[data-scroll]');
+      const mobileOverlay = document.getElementById('mobileOverlay');
+      const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+
+      function scrollToSection(id){
+        const el = document.getElementById(id);
+        if(!el) return;
+        el.scrollIntoView({behavior:'smooth', block:'start'});
+      }
+
+      sidebarButtons.forEach(btn=>{
+        btn.addEventListener('click',()=> scrollToSection(btn.dataset.scroll));
+      });
+
+      mobileMenuBtn?.addEventListener('click',()=>{
+        const opening = !mobileOverlay.classList.contains('open');
+        mobileOverlay.classList.toggle('open');
+        // Back button (mobile): close overlay instead of leaving the page history.
+        if(opening){
+          history.pushState({menuOpen:true}, 'menuOpen');
+        }
+        mobileOverlay.style.transition = 'transform .22s ease, opacity .22s ease';
+
+        if(opening){
+          // Start from the “off-canvas” position for animation.
+          mobileOverlay.style.transform = 'translateX(12px)';
+          mobileOverlay.style.opacity = '0';
+
+          // Next frame: animate in.
+          requestAnimationFrame(()=>{
+            mobileOverlay.style.transform = 'translateX(0)';
+            mobileOverlay.style.opacity = '1';
+          });
+        } else {
+          mobileOverlay.style.transform = 'translateX(12px)';
+          mobileOverlay.style.opacity = '0';
+        }
+      });
+
+      document.querySelectorAll('[data-scroll]').forEach(a=>{
+        a.addEventListener('click',(e)=>{
+          if(a.getAttribute('href')?.startsWith('#')) e.preventDefault();
+          scrollToSection(a.dataset.scroll);
+          mobileOverlay.classList.remove('open');
+        })
+      });
+
+      // Progress bar
+      const progressInner = document.getElementById('progressInner');
+      function updateProgress(){
+        const doc = document.documentElement;
+        const max = doc.scrollHeight - doc.clientHeight;
+        const value = max <= 0 ? 0 : (window.scrollY / max);
+        progressInner.style.transform = `scaleX(${Math.min(1, Math.max(0, value))})`;
+      }
+      window.addEventListener('scroll', updateProgress, {passive:true});
+      updateProgress();
+
+      // Certificates
+      const certifications = [
+        {
+          name: 'Google Cybersecurity Professional Certificate (v2)',
+          issuer: 'Google / Coursera',
+          date: 'Oct 2026',
+          verifyUrl: 'https://coursera.org/verify/professional-cert/0U9WHCM6P8ER',
+          credlyUrl: 'https://www.credly.com/go/A5tfSq7C'
+        },
+        {
+          name: 'Foundations of Cybersecurity',
+          issuer: 'Google / Coursera',
+          date: 'Feb 2026',
+          verifyUrl: 'https://coursera.org/verify/Z1ITX3I68OR3'
+        },
+        {
+          name: 'Play It Safe: Manage Security Risks',
+          issuer: 'Google / Coursera',
+          date: 'Feb 2026',
+          verifyUrl: 'https://coursera.org/verify/BCGD04FJUGPS'
+        },
+        {
+          name: 'Connect and Protect: Networks and Network Security',
+          issuer: 'Google / Coursera',
+          date: 'Mar 2026',
+          verifyUrl: 'https://coursera.org/verify/D4OEL4PBZAPV'
+        },
+        {
+          name: 'Tools of the Trade: Linux and SQL',
+          issuer: 'Google / Coursera',
+          date: 'Jun 2026',
+          verifyUrl: 'https://coursera.org/verify/GABADGKI9VOE'
+        },
+        {
+          name: 'Assets, Threats, and Vulnerabilities',
+          issuer: 'Google / Coursera',
+          date: 'Sep 2026',
+          verifyUrl: 'https://coursera.org/verify/8RMPT6YS5BJ8'
+        },
+        {
+          name: 'Sound the Alarm: Detection and Response',
+          issuer: 'Google / Coursera',
+          date: 'Sep 2026',
+          verifyUrl: 'https://coursera.org/verify/FAA4UUOW2EG5'
+        },
+        {
+          name: 'Automate Cybersecurity Tasks with Python',
+          issuer: 'Google / Coursera',
+          date: 'Oct 2026',
+          verifyUrl: 'https://coursera.org/verify/QY2CYRKWMN2E'
+        },
+        {
+          name: 'Put It to Work: Prepare for Cybersecurity Jobs',
+          issuer: 'Google / Coursera',
+          date: 'Oct 2026',
+          verifyUrl: 'https://coursera.org/verify/KRV7QX6KLP1I'
+        },
+        {
+          name: 'Accelerate Your Job Search with AI',
+          issuer: 'Google / Coursera',
+          date: 'Oct 2026',
+          verifyUrl: 'https://coursera.org/verify/I5O7ESG5VCZY'
+        },
+        {
+          name: 'Networking Fundamentals and Physical Networks',
+          issuer: 'Packt / Coursera',
+          date: 'Jun 2026',
+          verifyUrl: 'https://coursera.org/verify/27X53S4JCSG5'
+        }
+      ];
+
+      const certList = document.getElementById('certList');
+
+      certifications.forEach(cert => {
+        const row = document.createElement('div');
+        row.className = 'card';
+        row.style.padding = '16px';
+        row.style.borderRadius = '14px';
+        row.style.background = 'rgba(2,6,23,.35)';
+        row.style.border = '1px solid rgba(59,130,246,.18)';
+
+        const content = document.createElement('div');
+        content.style.cssText = 'display:flex; gap:14px; align-items:flex-start; justify-content:space-between; flex-wrap:wrap';
+
+        const details = document.createElement('div');
+        details.style.cssText = 'display:flex; gap:12px; align-items:flex-start; flex:1; min-width:220px';
+
+        const icon = document.createElement('div');
+        icon.style.cssText = 'width:44px; height:44px; flex:none; border-radius:14px; display:grid; place-items:center; background:rgba(34,211,238,.14); border:1px solid rgba(34,211,238,.22); color:#67e8f9; font-weight:900';
+        icon.textContent = '✓';
+
+        const text = document.createElement('div');
+        const name = document.createElement('div');
+        name.style.cssText = 'font-weight:900; color:#60a5fa; font-size:16px';
+        name.textContent = cert.name;
+        const issuer = document.createElement('div');
+        issuer.style.cssText = 'color:#94a3b8; font-size:13px; margin-top:4px';
+        issuer.textContent = `${cert.issuer} · ${cert.date}`;
+        text.append(name, issuer);
+        details.append(icon, text);
+
+        const actions = document.createElement('div');
+        actions.style.cssText = 'display:flex; gap:8px; flex-wrap:wrap';
+        const verify = document.createElement('a');
+        verify.className = 'btn primary';
+        verify.style.cssText = 'padding:10px 16px; border-radius:12px; font-size:14px';
+        verify.href = cert.verifyUrl;
+        verify.target = '_blank';
+        verify.rel = 'noopener noreferrer';
+        verify.textContent = 'Verify';
+        actions.appendChild(verify);
+
+        if (cert.credlyUrl) {
+          const credly = document.createElement('a');
+          credly.className = 'btn';
+          credly.style.cssText = 'padding:10px 16px; border-radius:12px; font-size:14px';
+          credly.href = cert.credlyUrl;
+          credly.target = '_blank';
+          credly.rel = 'noopener noreferrer';
+          credly.textContent = 'Credly Badge';
+          actions.appendChild(credly);
+        }
+
+        content.append(details, actions);
+        row.appendChild(content);
+        certList.appendChild(row);
+      });
+    </script>
+  </body>
+</html>
